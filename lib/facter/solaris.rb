@@ -3,7 +3,7 @@ require 'facter/util/solaris'
 Facter.add(:zonename) do
     confine :kernel => :SunOS
     setcode do
-        %{/usr/bin/zonename} if Facter.value(:kernelversion).to_f >= 5.10
+        %{/usr/bin/zonename} if Facter.value(:kernelversion).split('.')[1].to_i >= 10
     end
 end
 
