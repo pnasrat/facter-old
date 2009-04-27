@@ -72,3 +72,14 @@ if Facter.value(:kernel) == "AIX"
         end
     end
 end
+
+if Facter.value(:kernel) == "HP-UX"
+    if FileTest.exists?("/opt/ignite/bin/print_manifest")
+        cpus = %x{/opt/ignite/bin/print_manifest}.split(/\n/).grep(/Processors:/).collect{|l| l.split[1]}
+        Facter.add("ProcessorCount") do
+            setcode do
+                cpus[0]
+            end
+        end
+    end
+end

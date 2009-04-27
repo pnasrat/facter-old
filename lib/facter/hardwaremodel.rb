@@ -19,3 +19,8 @@ Facter.add(:hardwaremodel) do
         Config::CONFIG['host_cpu']
     end
 end
+
+Facter.add(:hardwaremodel) do
+    confine :operatingsystem => :"hp-ux"
+    setcode '/bin/getconf MACHINE_MODEL'
+end

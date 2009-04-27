@@ -44,3 +44,27 @@ if Facter.value(:kernel) == "AIX"
         end
     end
 end
+if Facter.value(:kernel) == "HP-UX"
+    # no MemoryFree because hopefully there is none
+    if FileTest.exists?("/opt/ignite/bin/print_manifest")
+        mem = %x{/opt/ignite/bin/print_manifest}.split(/\n/).grep(/Main Memory:/).collect{|l| l.split[2]}
+        Facter.add(:MemorySize) do
+            setcode do
+                Facter::Memory.scale_number(mem[0].to_f,"MB")
+            end
+        end
+    end
+    swapt = %x{/usr/sbin/swapinfo -dtm}.split(/\n/).grep(/^total/)
+    swap  = swapt[0].split[1]
+    swapf = swapt[0].split[3]
+    Facter.add("SwapTotal") do
+        setcode do
+            Facter::Memory.scale_number(swap.to_f,"MB")
+        end
+    end
+    Facter.add("SwapFree") do
+        setcode do
+            Facter::Memory.scale_number(swapf.to_f,"MB")
+        end
+    end
+end
