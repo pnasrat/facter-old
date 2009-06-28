@@ -6,8 +6,11 @@ require 'open-uri'
 require 'timeout'
 
 def can_connect?(ip,port,wait_sec=2)
- Timeout::timeout(wait_sec) {open(ip, port)}
+ url = "http://#{ip}:#{port}/"
+ Timeout::timeout(wait_sec) {open(url)}
  return true
+rescue Timeout::Error
+  return false
 rescue
   return false
 end
